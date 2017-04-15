@@ -17,6 +17,7 @@ return function()
   local function try_to_start_pending_builds()
     for build_index, build in ipairs(pending_builds) do
       for _, builder in ipairs(builders) do
+        -- fixme: check if builder is alive
         if builder_can_build(builder, build) then
           table.remove(pending_builds, build_index)
           execute_build(builder, build)
@@ -45,5 +46,7 @@ return function()
       table.insert(builders, builder)
       try_to_start_pending_builds()
     end
+
+    -- fixme: support remove_builder
   }
 end
