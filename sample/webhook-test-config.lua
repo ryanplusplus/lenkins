@@ -1,6 +1,6 @@
 return {
   owner = 'ryanplusplus',
-  repo = 'mach.lua',
+  repo = 'webhook-test',
 
   builds = {
     {
@@ -10,7 +10,7 @@ return {
       jobs = {
         {
           tools = { 'lenv', 'ubuntu' },
-          script = 'tdd.sh'
+          script = 'test.sh'
         }
       }
     },
@@ -22,7 +22,7 @@ return {
       jobs = {
         {
           tools = { 'lenv', 'ubuntu' },
-          script = 'tdd.sh'
+          script = 'test.sh'
         }
       }
     }

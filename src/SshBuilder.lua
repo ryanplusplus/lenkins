@@ -12,13 +12,18 @@ return function(config)
     run = function(build_info)
       local command = 'BASH_XTRACEFD=1; set -x; ' .. table.concat({
         'rm -rf repo',
-        'git clone ' .. build_info.url .. ' repo',
+        'git clone --recursive ' .. build_info.url .. ' repo',
         'cd repo',
         'git checkout ' .. build_info.commit,
         'sh ' .. build_info.script
       }, ' 2>&1 && ') .. ' 2>&1'
 
-      local exit_code, output = exec('ssh', { config.server, '-p' .. (config.port or 22), command })
+      local exit_code, output = exec('ssh', {
+        config.server,
+        '-p' .. (config.port or 22),
+        '-o StrictHostKeyChecking=no',
+        command
+      })
       print(exit_code)
       print(output)
     end
