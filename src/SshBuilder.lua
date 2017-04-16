@@ -1,12 +1,24 @@
+local timer = require 'timer'
 local exec = require './exec'
 local Set = require './Set'
 
 return function(config)
+  local alive = true
+
   return {
     labels = Set(config.labels),
 
     alive = function()
-      return 0 == exec('ssh', { config.server, '-p' .. tostring(config.port or 22), 'exit' })
+      return alive
+    end,
+
+    ping = function()
+      local exit_code = exec('ssh', {
+        config.server,
+        '-p' .. tostring(config.port or 22),
+        'exit'
+      }, 3000)
+      return exit_code == 0
     end,
 
     run = function(build_info)
@@ -23,9 +35,9 @@ return function(config)
         '-p' .. (config.port or 22),
         '-o StrictHostKeyChecking=no',
         command
-      })
-      print(exit_code)
-      print(output)
+      }, build_info.timeout)
+
+      return exit_code, output
     end
   }
 end

@@ -10,7 +10,8 @@ return {
       jobs = {
         {
           tools = { 'lenv', 'ubuntu' },
-          script = 'test.sh'
+          script = 'test.sh',
+          timeout = 60 * 1000
         }
       }
     },
@@ -22,7 +23,8 @@ return {
       jobs = {
         {
           tools = { 'lenv', 'ubuntu' },
-          script = 'test.sh'
+          script = 'test.sh',
+          timeout = 60 * 1000
         }
       }
     }

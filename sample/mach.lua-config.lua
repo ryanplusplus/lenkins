@@ -10,7 +10,8 @@ return {
       jobs = {
         {
           tools = { 'lenv', 'ubuntu' },
-          script = 'tdd.sh'
+          script = 'tdd.sh',
+          timeout = 60 * 1000
         }
       }
     },
@@ -22,7 +23,8 @@ return {
       jobs = {
         {
           tools = { 'lenv', 'ubuntu' },
-          script = 'tdd.sh'
+          script = 'tdd.sh',
+          timeout = 60 * 1000
         }
       }
     }

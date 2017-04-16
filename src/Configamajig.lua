@@ -5,8 +5,6 @@ return function(...)
     table.insert(configs, loadfile(file, 't')())
   end
 
-  p(configs)
-
   return {
     get_configs = function()
       return configs

@@ -14,15 +14,17 @@ return function(web_hook_server, build_manager, configamajig)
       commit = event.commit,
       labels = job.tools,
       script = job.script,
-      done = function()
+      timeout = job.timeout,
+      done = function(exit_code, output)
         print(event.type .. ' build of ' .. event.url .. '[' .. i .. '] finished')
+        print('exit_code', exit_code)
+        print('output:')
+        print(output)
       end
     })
   end
 
   web_hook_server.on_event(function(event)
-    p(event)
-
     for _, config in ipairs(configamajig.get_configs()) do
       if event.owner == config.owner and event.repo == config.repo then
         for _, build in ipairs(config.builds) do

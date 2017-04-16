@@ -31,8 +31,6 @@ return function(weblit)
       event.target = req.body.pull_request.base.ref
     end
 
-    p(event)
-
     if handler then
       handler(event)
     end

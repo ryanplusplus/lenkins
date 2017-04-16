@@ -8,6 +8,7 @@ return {
   homepage = 'https://github.com/ryanplusplus/lenkins',
   dependencies = {
     'ryanplusplus/mach@1.0.11',
+    'ryanplusplus/proxyquire@1.0.2',
     'creationix/coro-spawn@3.0.0',
     'creationix/weblit@3.0.1',
     'luvit/luvit@2.12.1',

@@ -1,8 +1,17 @@
 describe('BuildManager', function()
-  local BuildManager = require 'BuildManager'
+  local mach = require 'deps/mach'
+  local proxyquire = require 'deps/proxyquire'
+  local Set = require 'Set'
+  local rise_from_the_dead_handler
+  local FakeBuilderPinger = function(_, _, handler)
+    rise_from_the_dead_handler = handler
+  end
+
+  local BuildManager = proxyquire('BuildManager', {
+    ['./BuilderPinger'] = FakeBuilderPinger
+  })
   local build_manager
 
-  local mach = require 'deps/mach'
 
   local function Build(name, labels)
     return {
@@ -13,16 +22,13 @@ describe('BuildManager', function()
 
   local function Builder(name, labels)
     local run_mock = mach.mock_function(name .. '.run')
-    local _labels = {}
     local co
 
-    for _, v in ipairs(labels) do
-      _labels[v] = true
-    end
-
     return {
-      labels = _labels,
+      labels = Set(labels),
       run_mock = run_mock,
+
+      alive = true,
 
       run = function(build)
         run_mock(build)
@@ -156,6 +162,24 @@ describe('BuildManager', function()
 
     builder1.run_mock:should_be_called_with(mach.match(build2)):
       and_then(builder2.run_mock:should_be_called_with(mach.match(build1))):
+      when(function()
+        build_manager.add_builder(builder1)
+        build_manager.add_builder(builder2)
+      end)
+  end)
+
+  it('should only build if matching builders are alive', function()
+    local build1 = Build('build1', { 'a', 'b' })
+    local build2 = Build('build2', { 'b', 'c' })
+    local builder1 = Builder('builder1', { 'b', 'c' })
+    local builder2 = Builder('builder2', { 'a', 'b', 'c' })
+
+    builder2.alive = false
+
+    build_manager.schedule_build(build1)
+    build_manager.schedule_build(build2)
+
+    builder1.run_mock:should_be_called_with(mach.match(build2)):
       when(function()
         build_manager.add_builder(builder1)
         build_manager.add_builder(builder2)
